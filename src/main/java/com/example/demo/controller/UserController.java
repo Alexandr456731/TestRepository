@@ -51,7 +51,7 @@
             if (user != null) {
                 return "Баланс: " + user.getBalance().toString() + "<br>" +
                         "<button type=\"button\" onclick=\"alert('В разработке')\">Пополнить</button><br><br>" +
-                        "<a href='/option/" + login + "?password=\"" + password + "\"'><button type=\"button\">Настройки</button></a><br><br>" +
+                        "<a href=\"/option/" + login + "?password=\"" + password + "\"><button type=\"button\">Настройки</button></a><br><br>" +
                         "<a href=\"/\"><button type=\"button\">Выход</button></a>";
             }else{
                 return "<h1>Неверный логин или пароль!</h1>" + authorizationUser();
@@ -66,7 +66,8 @@
 
         @GetMapping("/delete/{login}")
         public String deleteUser(@PathVariable String login) {
-            return "<form method=\"post\" action=\"/delete/" + login + "\">" +
+            return "<form method=\"post\" action=\"/delete\">" +
+                    "<input type=\"hidden\" required name=\"login\" value=\"" + login + "\">" +
                     "<label for=\"password\">Пароль: </label>" +
                     "<input id=\"password\" type=\"password\" name=\"password\" required>\t" +
                     "<button type=\"submit\">Подтвердить</button>" +
@@ -75,13 +76,13 @@
 
         }
 
-        @PostMapping("/delete/{login}")
-        public String deleteUser(@PathVariable String login, @RequestParam String password) {
+        @PostMapping("/delete")
+        public String deleteUser(@RequestParam String login, @RequestParam String password) {
             return deleteUserConfirm(login, password);
         }
 
-        @DeleteMapping("/delete/{login}")
-        public String deleteUserConfirm(@PathVariable String login, @RequestParam String password) {
+        @DeleteMapping("/delete")
+        public String deleteUserConfirm(@RequestParam String login, @RequestParam String password) {
             return userService.delete(login, password) + "<br><br><a href=\"/\"><button type=\"button\">На главную</button></a>";
         }
 
@@ -94,10 +95,5 @@
                     "</form><br><br>" +
                     "<a href=\"/\"><button type=\"button\">На главную</button></a>";
 
-        }
-
-        @GetMapping("/admin/{login}")
-        public String correct(@PathVariable String login, @RequestParam String password) {
-            return userService.correct(login, password);
         }
     }
