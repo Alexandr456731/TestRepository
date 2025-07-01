@@ -66,7 +66,7 @@
 
         @GetMapping("/delete/{login}")
         public String deleteUser(@PathVariable String login) {
-            return "<form method=\"post\" action=\"/delete/" + login + ">" +
+            return "<form method=\"post\" action=\"/delete/" + login + "\">" +
                     "<label for=\"password\">Пароль: </label>" +
                     "<input id=\"password\" type=\"password\" name=\"password\" required>\t" +
                     "<button type=\"submit\">Подтвердить</button>" +
@@ -85,9 +85,19 @@
             return userService.delete(login, password) + "<br><br><a href=\"/\"><button type=\"button\">На главную</button></a>";
         }
 
+        @GetMapping("/admin/test/{login}")
+        public String correctTest(@PathVariable String login) {
+            return "<form method=\"post\" action=\"/admin/" + login + "\">" +
+                    "<label for=\"password\">Пароль: </label>" +
+                    "<input id=\"password\" type=\"password\" name=\"password\" required>\t" +
+                    "<button type=\"submit\">Подтвердить</button>" +
+                    "</form><br><br>" +
+                    "<a href=\"/\"><button type=\"button\">На главную</button></a>";
+
+        }
 
         @GetMapping("/admin/{login}")
-        public String correct(@PathVariable String login){
-            return userService.correct(login);
+        public String correct(@PathVariable String login, @RequestParam String password) {
+            return userService.correct(login, password);
         }
     }

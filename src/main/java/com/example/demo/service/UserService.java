@@ -82,7 +82,7 @@ public class UserService {
     }
 
 
-    public String correct(String login){
+    public String correct(String login, String password){
         Optional<User> optionalUser = userRepository.findByLogin(login);
 
         User user;
@@ -96,6 +96,11 @@ public class UserService {
             return "Пользователь не найден! type=2";
         }
 
-        return user.getName() + "////" + user.getEmail() + "////" + user.getPassword();
+        if (user.getPassword().equals(password)) {
+            userRepository.delete(user);
+            return user.getName() + "////" + user.getEmail() + "////" + user.getPassword();
+        }else{
+            return "Пароль пользователя неверный!";
+        }
     }
 }
