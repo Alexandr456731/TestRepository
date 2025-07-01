@@ -66,39 +66,16 @@ public class UserService {
         if (!optionalUser.isEmpty() && optionalUser != null) {
             user = optionalUser.get();
         }else{
-            return "Пользователь не найден! type=1";
+            return "Пользователь не найден!";
         }
 
         if (user == null) {
-            return "Пользователь не найден! type=2";
+            return "Пользователь не найден!";
         }
 
         if (user.getPassword().equals(password)) {
             userRepository.delete(user);
             return "Успешно!";
-        }else{
-            return "Пароль пользователя неверный!";
-        }
-    }
-
-
-    public String correct(String login, String password){
-        Optional<User> optionalUser = userRepository.findByLogin(login);
-
-        User user;
-        if (!optionalUser.isEmpty() && optionalUser != null) {
-            user = optionalUser.get();
-        }else{
-            return "Пользователь не найден! type=1";
-        }
-
-        if (user == null) {
-            return "Пользователь не найден! type=2";
-        }
-
-        if (user.getPassword().equals(password)) {
-            userRepository.delete(user);
-            return user.getName() + "////" + user.getEmail() + "////" + user.getPassword();
         }else{
             return "Пароль пользователя неверный!";
         }
