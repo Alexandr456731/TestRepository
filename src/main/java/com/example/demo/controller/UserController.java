@@ -3,11 +3,12 @@
     import com.example.demo.repository.User;
     import com.example.demo.service.UserService;
     import org.springframework.http.ResponseEntity;
+    import org.springframework.stereotype.Controller;
     import org.springframework.web.bind.annotation.*;
 
     import java.util.List;
 
-    @RestController
+    @Controller
     public class UserController {
         private final UserService userService;
         public UserController(UserService userService) {
@@ -60,10 +61,23 @@
 
         @GetMapping("/option/{login}")
         public String getOption(@PathVariable String login, @RequestParam String password) {
-            return "<form method=\"post\" action=\"/authorization\">" +
-                    "<input type=\"text\"name=\"login\" required hidden value=\"" + login + "\">" +
-                    "<input type=\"password\"name=\"password\" required hidden value=\"" + password + "\">" +
-                    "<button type=\"submit\">Назад</button>" +
-                    "</form>";
+            return "<a href=\"/delete/" + login + "\"><button type=\"button\">Удалить аккаунт</button><br><br><br></a>" +
+                    "<a href=\"/\"><button type=\"button\">На главную</button></a>";
+        }
+
+        @GetMapping("/delete/{login}")
+        public String deleteUser(@PathVariable String login) {
+            return "<form method=\"post\" action=\"/delete/" + login + ">" +
+                    "<input type=\"hidden\" name=\"_method\" value=\"DELETE\">" +
+                    "<input type=\"password\" name=\"password\" required><br><br>" +
+                    "<button type=\"submit\">Отправить</button>" +
+                    "</form><br><br><br><br>" +
+                    "<a href=\"/\"><button type=\"button\">На главную</button></a>";
+
+        }
+
+        @DeleteMapping("/delete/{login}")
+        public String deleteUserConfirm(@PathVariable String login, @RequestParam String password) {
+            return userService.delete(login, password) + "<br><br><a href=\"/\"><button type=\"button\">На главную</button></a>";
         }
     }

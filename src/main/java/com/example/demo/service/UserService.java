@@ -57,4 +57,19 @@ public class UserService {
             return null;
         }
     }
+
+    public String delete(String login, String password){
+        Optional<User> optionalUser = userRepository.findByLogin(login);
+        if (optionalUser.isEmpty() || optionalUser == null) {
+            return "Данного пользователя нет!";
+        }
+
+        User user = optionalUser.get();
+        if (user.getPassword().equals(password)) {
+            userRepository.delete(user);
+            return "Успешно!";
+        }else{
+            return "Пароль пользователя неверный!";
+        }
+    }
 }
