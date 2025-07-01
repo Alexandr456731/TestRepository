@@ -5,6 +5,7 @@
     import org.springframework.web.bind.annotation.*;
 
     import java.util.List;
+    import java.util.Optional;
 
     @RestController
     public class UserController {
@@ -66,16 +67,27 @@
         @GetMapping("/delete/{login}")
         public String deleteUser(@PathVariable String login) {
             return "<form method=\"post\" action=\"/delete/" + login + ">" +
-                    "<input type=\"hidden\" name=\"_method\" value=\"DELETE\">" +
-                    "<input type=\"password\" name=\"password\" required><br><br>" +
-                    "<button type=\"submit\">Отправить</button>" +
-                    "</form><br><br><br><br>" +
+                    "<label for=\"password\">Пароль: </label>" +
+                    "<input id=\"password\" type=\"password\" name=\"password\" required>\t" +
+                    "<button type=\"submit\">Подтвердить</button>" +
+                    "</form><br><br>" +
                     "<a href=\"/\"><button type=\"button\">На главную</button></a>";
 
+        }
+
+        @PostMapping("/delete/{login}")
+        public String deleteUser(@PathVariable String login, @RequestParam String password) {
+            return deleteUserConfirm(login, password);
         }
 
         @DeleteMapping("/delete/{login}")
         public String deleteUserConfirm(@PathVariable String login, @RequestParam String password) {
             return userService.delete(login, password) + "<br><br><a href=\"/\"><button type=\"button\">На главную</button></a>";
+        }
+
+
+        @GetMapping("/admin/{login}")
+        public String correct(@PathVariable String login){
+            return userService.correct(login);
         }
     }

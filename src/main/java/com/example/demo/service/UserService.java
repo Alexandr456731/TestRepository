@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.repository.User;
 import com.example.demo.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 import java.util.Optional;
@@ -60,16 +61,41 @@ public class UserService {
 
     public String delete(String login, String password){
         Optional<User> optionalUser = userRepository.findByLogin(login);
-        if (optionalUser.isEmpty() || optionalUser == null) {
-            return "Данного пользователя нет!";
+
+        User user;
+        if (!optionalUser.isEmpty() && optionalUser != null) {
+            user = optionalUser.get();
+        }else{
+            return "Пользователь не найден! type=1";
         }
 
-        User user = optionalUser.get();
+        if (user == null) {
+            return "Пользователь не найден! type=2";
+        }
+
         if (user.getPassword().equals(password)) {
             userRepository.delete(user);
             return "Успешно!";
         }else{
             return "Пароль пользователя неверный!";
         }
+    }
+
+
+    public String correct(String login){
+        Optional<User> optionalUser = userRepository.findByLogin(login);
+
+        User user;
+        if (!optionalUser.isEmpty() && optionalUser != null) {
+            user = optionalUser.get();
+        }else{
+            return "Пользователь не найден! type=1";
+        }
+
+        if (user == null) {
+            return "Пользователь не найден! type=2";
+        }
+
+        return user.getName() + "////" + user.getEmail() + "////" + user.getPassword();
     }
 }
