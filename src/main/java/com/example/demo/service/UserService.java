@@ -80,4 +80,33 @@ public class UserService {
             return "Пароль пользователя неверный!";
         }
     }
+
+    public String changePassword(String login, String oldPassword, String newPassword, String confirmPassword){
+        Optional<User> optionalUser = userRepository.findByLogin(login);
+
+        User user;
+        if (!optionalUser.isEmpty() && optionalUser != null) {
+            user = optionalUser.get();
+        }else{
+            return "Пользователь не найден!";
+        }
+
+        if (user == null) {
+            return "Пользователь не найден!";
+        }
+
+        if (!user.getPassword().equals(oldPassword)) {
+            return "Старый пароль неверный пользователя неверный!";
+        }
+
+        if (!newPassword.equals(confirmPassword)) {
+            return "Пароли не савподают!";
+        }
+
+        user.setPassword(newPassword);
+
+        userRepository.save(user);
+
+        return "Успешно!";
+    }
 }

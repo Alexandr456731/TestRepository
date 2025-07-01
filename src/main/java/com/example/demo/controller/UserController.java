@@ -1,6 +1,7 @@
     package com.example.demo.controller;
 
     import com.example.demo.repository.User;
+    import com.example.demo.repository.UserRepository;
     import com.example.demo.service.UserService;
     import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +11,7 @@
     @RestController
     public class UserController {
         private final UserService userService;
-        public UserController(UserService userService) {
+        public UserController(UserService userService, UserRepository userRepository) {
             this.userService = userService;
         }
 
@@ -48,8 +49,10 @@
         @PostMapping("/authorization")
         public String authorizationUser(@RequestParam String login, @RequestParam String password) {
             User user = userService.authorization(login, password);
+
             if (user != null) {
-                return "Баланс: " + user.getBalance().toString() + "<br>" +
+                return "<h2>Здравствуйте, " + user.getName() + "!</h2>" +
+                        "Баланс: " + user.getBalance().toString() + "<br>" +
                         "<button type=\"button\" onclick=\"alert('В разработке')\">Пополнить</button><br><br>" +
                         "<a href=\"/option/" + login + "?password=\"" + password + "\"><button type=\"button\">Настройки</button></a><br><br>" +
                         "<a href=\"/\"><button type=\"button\">Выход</button></a>";
@@ -60,8 +63,37 @@
 
         @GetMapping("/option/{login}")
         public String getOption(@PathVariable String login, @RequestParam String password) {
-            return "<a href=\"/delete/" + login + "\"><button type=\"button\">Удалить аккаунт</button><br><br><br></a>" +
+            return "<a href=\"/delete/" + login + "\"><button type=\"button\">Удалить аккаунт</button></a><br><br>" +
+                    "<a href=\"/change_password/" + login + "\"><button type=\"button\">Сменить пароль</button></a><br><br><br>" +
                     "<a href=\"/\"><button type=\"button\">На главную</button></a>";
+        }
+
+        @GetMapping("/change_password/{login}")
+        public String changePassword(@PathVariable String login) {
+            return "<form method=\"post\" action=\"/change_password\" onsubmit=\"return checkPassword()\">" +
+                    "<input type=\"hidden\" name=\"login\" value=\"" + login + "\">" +
+                    "<label for=\"old_password\">Старый пароль: </label>" +
+                    "<input type=\"password\" id=\"old_password\" name=\"oldPassword\" required><br><br>" +
+
+                    "<label for=\"new_password\">Новый пароль: </label>" +
+                    "<input type=\"password\" id=\"new_password\" name=\"newPassword\" required><br><br>" +
+
+                    "<label for=\"confirm_password\">Подтвердить пароль: </label>" +
+                    "<input type=\"password\" id=\"confirm_password\" name=\"confirmPassword\" required><br><br>" +
+
+                    "<button type=\"submit\">Сменить</button>" +
+                    "</form>";
+        }
+
+        @PostMapping("/change_password")
+        public String PostChangePassword(@RequestParam String login, @RequestParam String oldPassword, @RequestParam String newPassword, @RequestParam String confirmPassword) {
+            return changePassword(login, oldPassword, newPassword, confirmPassword);
+        }
+
+        @PutMapping("/change_password")
+        public String changePassword(@RequestParam String login, @RequestParam String oldPassword, @RequestParam String newPassword, @RequestParam String confirmPassword) {
+            return userService.changePassword(login, oldPassword, newPassword, confirmPassword) + "" +
+                    "<br><br><a href=\"/\"><button>На главную</button></a>";
         }
 
         @GetMapping("/delete/{login}")
@@ -73,8 +105,8 @@
                     "<button type=\"submit\">Подтвердить</button>" +
                     "</form><br><br>" +
                     "<a href=\"/\"><button type=\"button\">На главную</button></a>";
-
         }
+
 
         @PostMapping("/delete")
         public String deleteUser(@RequestParam String login, @RequestParam String password) {
@@ -84,16 +116,5 @@
         @DeleteMapping("/delete")
         public String deleteUserConfirm(@RequestParam String login, @RequestParam String password) {
             return userService.delete(login, password) + "<br><br><a href=\"/\"><button type=\"button\">На главную</button></a>";
-        }
-
-        @GetMapping("/admin/test/{login}")
-        public String correctTest(@PathVariable String login) {
-            return "<form method=\"post\" action=\"/admin/" + login + "\">" +
-                    "<label for=\"password\">Пароль: </label>" +
-                    "<input id=\"password\" type=\"password\" name=\"password\" required>\t" +
-                    "<button type=\"submit\">Подтвердить</button>" +
-                    "</form><br><br>" +
-                    "<a href=\"/\"><button type=\"button\">На главную</button></a>";
-
         }
     }
