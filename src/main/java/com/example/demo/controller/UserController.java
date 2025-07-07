@@ -1,17 +1,13 @@
     package com.example.demo.controller;
 
-    import com.example.demo.repository.User;
-    import com.example.demo.repository.UserRepository;
+    import model.User;
     import com.example.demo.service.UserService;
     import org.springframework.web.bind.annotation.*;
-
-    import java.util.List;
-    import java.util.Optional;
 
     @RestController
     public class UserController {
         private final UserService userService;
-        public UserController(UserService userService, UserRepository userRepository) {
+        public UserController(UserService userService) {
             this.userService = userService;
         }
 
@@ -62,7 +58,7 @@
         }
 
         @GetMapping("/option/{login}")
-        public String getOption(@PathVariable String login, @RequestParam String password) {
+        public String getOption(@PathVariable String login) {
             return "<a href=\"/delete/" + login + "\"><button type=\"button\">Удалить аккаунт</button></a><br><br>" +
                     "<a href=\"/change_password/" + login + "\"><button type=\"button\">Сменить пароль</button></a><br><br><br>" +
                     "<a href=\"/\"><button type=\"button\">На главную</button></a>";
@@ -86,10 +82,6 @@
                     "</form>";
         }
 
-//        @PostMapping("/change_password")
-//        public String PostChangePassword(@RequestParam String login, @RequestParam String oldPassword, @RequestParam String newPassword, @RequestParam String confirmPassword) {
-//            return changePassword(login, oldPassword, newPassword, confirmPassword);
-//        }
 
         @PutMapping("/change_password")
         public String changePassword(@RequestParam String login, @RequestParam String oldPassword, @RequestParam String newPassword, @RequestParam String confirmPassword) {
@@ -108,12 +100,6 @@
                     "</form><br><br>" +
                     "<a href=\"/\"><button type=\"button\">На главную</button></a>";
         }
-
-
-//        @PostMapping("/delete")
-//        public String deleteUser(@RequestParam String login, @RequestParam String password) {
-//            return deleteUserConfirm(login, password);
-//        }
 
         @DeleteMapping("/delete")
         public String deleteUserConfirm(@RequestParam String login, @RequestParam String password) {
