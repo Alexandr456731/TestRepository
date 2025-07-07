@@ -71,6 +71,7 @@
         @GetMapping("/change_password/{login}")
         public String changePassword(@PathVariable String login) {
             return "<form method=\"post\" action=\"/change_password\" onsubmit=\"return checkPassword()\">" +
+                    "<input type=\"hidden\" name=\"_method\" value=\"put\">" +
                     "<input type=\"hidden\" name=\"login\" value=\"" + login + "\">" +
                     "<label for=\"old_password\">Старый пароль: </label>" +
                     "<input type=\"password\" id=\"old_password\" name=\"oldPassword\" required><br><br>" +
@@ -85,10 +86,10 @@
                     "</form>";
         }
 
-        @PostMapping("/change_password")
-        public String PostChangePassword(@RequestParam String login, @RequestParam String oldPassword, @RequestParam String newPassword, @RequestParam String confirmPassword) {
-            return changePassword(login, oldPassword, newPassword, confirmPassword);
-        }
+//        @PostMapping("/change_password")
+//        public String PostChangePassword(@RequestParam String login, @RequestParam String oldPassword, @RequestParam String newPassword, @RequestParam String confirmPassword) {
+//            return changePassword(login, oldPassword, newPassword, confirmPassword);
+//        }
 
         @PutMapping("/change_password")
         public String changePassword(@RequestParam String login, @RequestParam String oldPassword, @RequestParam String newPassword, @RequestParam String confirmPassword) {
@@ -99,6 +100,7 @@
         @GetMapping("/delete/{login}")
         public String deleteUser(@PathVariable String login) {
             return "<form method=\"post\" action=\"/delete\">" +
+                    "<input type=\"hidden\" name=\"_method\" value=\"delete\">" +
                     "<input type=\"hidden\" required name=\"login\" value=\"" + login + "\">" +
                     "<label for=\"password\">Пароль: </label>" +
                     "<input id=\"password\" type=\"password\" name=\"password\" required>\t" +
@@ -108,10 +110,10 @@
         }
 
 
-        @PostMapping("/delete")
-        public String deleteUser(@RequestParam String login, @RequestParam String password) {
-            return deleteUserConfirm(login, password);
-        }
+//        @PostMapping("/delete")
+//        public String deleteUser(@RequestParam String login, @RequestParam String password) {
+//            return deleteUserConfirm(login, password);
+//        }
 
         @DeleteMapping("/delete")
         public String deleteUserConfirm(@RequestParam String login, @RequestParam String password) {
