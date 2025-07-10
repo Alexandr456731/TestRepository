@@ -8,10 +8,27 @@
     <title th:text="@{'Страница ' + ${login}}">Страница пользователя</title>
 </head>
 <body>
+    <p hidden th:text="${login}" id="login"></p>
     <h2>Здравствуйте, <span th:text="${name}">user.getName()</span>!</h2>
     Баланс: <span th:text="${balance}"> user.getBalance().toString()</span> <br>
-    <button type="button" onclick="alert('В разработке')">Пополнить</button><br><br>
+    <button type="button" onclick="hashConroll()">Пополнить</button><br><br>
     <a th:href="@{'/option/' + ${login} + '?password=' + ${password}}"><button type="button">Настройки</button></a><br><br>
     <a href="/"><button type="button">Выход</button></a>
+
+    <script>
+        function hashConroll() {
+            var isHash = confirm('Для этого нужен хэш оплаты! Он у вас есть?');
+
+            var login = document.getElementById("login").textContent;
+
+            if (!isHash){
+                alert("Извините, но для пополнение баланса нужен хэш!");
+            }else{
+                var hash = prompt("Введите хэш покупки:");
+
+                window.location.href = "/hash-admin/" + encodeURIComponent(login) + "/" + encodeURIComponent(hash);
+            }
+        }
+    </script>
 </body>
 </html>

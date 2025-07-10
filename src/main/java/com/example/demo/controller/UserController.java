@@ -40,12 +40,18 @@
             User user = userService.authorization(login, password);
 
             if (user != null) {
+                if (user.getIsBlocked()){
+                    model.addAttribute("text", "Данный аккаунт заблокирован!");
+                    return "wrongAuthorization";
+                }
+
                 model.addAttribute("name", user.getName());
                 model.addAttribute("balance", user.getBalance());
                 model.addAttribute("login", user.getLogin());
                 model.addAttribute("password", user.getPassword());
                 return "mainUser";
             }else{
+                model.addAttribute("text", "Неверный логин или пароль!");
                 return "wrongAuthorization";
             }
         }

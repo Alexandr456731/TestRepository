@@ -34,6 +34,15 @@ public class UserService {
             return "Аккаунт с таким логином уже существует!";
         }
 
+        if (user.getPassword() == null || user.getPassword().isEmpty() || user.getPassword().length() < 8) {
+            return "Пароль слишком короткий!";
+        }
+
+        String[] mass = user.getPassword().split(" ");
+        if (mass.length > 1) {
+            return "Пароль не может содержать пробелы!";
+        }
+
         userRepository.save(user);
         return "Успешно!";
     }
@@ -72,6 +81,10 @@ public class UserService {
             return "Пользователь не найден!";
         }
 
+        if (user.getIsBlocked()){
+            return "Данный пользователь заблокирован!";
+        }
+
         if (user.getPassword().equals(password)) {
             userRepository.delete(user);
             return "Успешно!";
@@ -92,6 +105,10 @@ public class UserService {
 
         if (user == null) {
             return "Пользователь не найден!";
+        }
+
+        if (user.getIsBlocked()){
+            return "Данный пользователь заблокирован!";
         }
 
         if (!user.getPassword().equals(oldPassword)) {

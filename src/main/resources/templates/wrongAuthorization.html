@@ -8,7 +8,7 @@
     <title>Ошибка авторизации</title>
 </head>
 <body>
-<h2><p style="color: #f02222">Неверный логин или пароль</p></h2>
+<h2><p style="color: #f02222" th:text="${text}"></p></h2>
 <form method="post" action="/authorization">
     <label for="login">Логин: </label><input type="text" id="login"  name="login" required><br><br>
     <label for="password">Пароль: </label><input type="password" id="password" name="password" required><br><br>
