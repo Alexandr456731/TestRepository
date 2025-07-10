@@ -119,6 +119,15 @@ public class UserService {
             return "Пароли не совподают!";
         }
 
+        if (newPassword == null || newPassword.isEmpty() || newPassword.length() < 8) {
+            return "Пароль слишком короткий!";
+        }
+
+        String[] mass = newPassword.split(" ");
+        if (mass.length > 1) {
+            return "Пароль не может содержать пробелы!";
+        }
+
         user.setPassword(newPassword);
 
         userRepository.save(user);
