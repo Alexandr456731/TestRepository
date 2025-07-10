@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title th:text="@{'Страница ' + ${login}}">Страница пользователя</title>
+</head>
+<body>
+    <h2>Здравствуйте, <span th:text="${name}">user.getName()</span>!</h2>
+    Баланс: <span th:text="${balance}"> user.getBalance().toString()</span> <br>
+    <button type="button" onclick="alert('В разработке')">Пополнить</button><br><br>
+    <a th:href="@{'/option/' + ${login} + '?password=' + ${password}}"><button type="button">Настройки</button></a><br><br>
+    <a href="/"><button type="button">Выход</button></a>
+</body>
+</html>

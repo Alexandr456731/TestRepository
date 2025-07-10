@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Удалить аккаунт</title>
+</head>
+<body>
+<form method="post" action="/delete">
+    <input type="hidden" name="_method" value="delete">
+    <input type="hidden" required name="login" th:value="${login}">
+    <label for="password">Пароль: </label>
+    <input id="password" type="password" name="password" required><br><br>
+    <button type="submit">Подтвердить</button>
+    </form><br><br>
+"<a href="/"><button type="button">На главную</button></a>
+</body>
+</html>

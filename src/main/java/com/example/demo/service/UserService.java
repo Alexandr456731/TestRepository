@@ -39,10 +39,10 @@ public class UserService {
     }
 
     public User authorization(String login, String password){
-        Optional<User> optionalUserser = userRepository.findByLogin(login);
+        Optional<User> optionalUser = userRepository.findByLogin(login);
         User user;
-        if (optionalUserser != null && !optionalUserser.isEmpty()) {
-            user = optionalUserser.get();
+        if (optionalUser != null && !optionalUser.isEmpty()) {
+            user = optionalUser.get();
         }else {
             return null;
         }
@@ -50,6 +50,7 @@ public class UserService {
         if (user == null) {
             return null;
         }
+
         if (user.getPassword().equals(password)) {
             return user;
         }else{
@@ -98,7 +99,7 @@ public class UserService {
         }
 
         if (!newPassword.equals(confirmPassword)) {
-            return "Пароли не савподают!";
+            return "Пароли не совподают!";
         }
 
         user.setPassword(newPassword);
