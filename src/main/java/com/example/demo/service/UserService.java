@@ -9,6 +9,7 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -34,25 +35,17 @@ public class UserService {
             return "Аккаунт с таким логином уже существует!";
         }
 
-        if (user.getPassword() == null || user.getPassword().isEmpty() || user.getPassword().length() < 8) {
-            return "Пароль слишком короткий!";
-        }
-
-        String[] mass = user.getPassword().split(" ");
-        if (mass.length > 1) {
-            return "Пароль не может содержать пробелы!";
-        }
 
         userRepository.save(user);
         return "Успешно!";
     }
 
-    public User authorization(String login, String password){
+    public User authorization(String login, String password) {
         Optional<User> optionalUser = userRepository.findByLogin(login);
         User user;
         if (optionalUser != null && !optionalUser.isEmpty()) {
             user = optionalUser.get();
-        }else {
+        } else {
             return null;
         }
 
@@ -62,18 +55,18 @@ public class UserService {
 
         if (user.getPassword().equals(password)) {
             return user;
-        }else{
+        } else {
             return null;
         }
     }
 
-    public String delete(String login, String password){
+    public String delete(String login, String password) {
         Optional<User> optionalUser = userRepository.findByLogin(login);
 
         User user;
         if (!optionalUser.isEmpty() && optionalUser != null) {
             user = optionalUser.get();
-        }else{
+        } else {
             return "Пользователь не найден!";
         }
 
@@ -81,25 +74,25 @@ public class UserService {
             return "Пользователь не найден!";
         }
 
-        if (user.getIsBlocked()){
+        if (user.getIsBlocked()) {
             return "Данный пользователь заблокирован!";
         }
 
         if (user.getPassword().equals(password)) {
             userRepository.delete(user);
             return "Успешно!";
-        }else{
+        } else {
             return "Пароль пользователя неверный!";
         }
     }
 
-    public String changePassword(String login, String oldPassword, String newPassword, String confirmPassword){
+    public String changePassword(String login, String oldPassword, String newPassword, String confirmPassword) {
         Optional<User> optionalUser = userRepository.findByLogin(login);
 
         User user;
         if (!optionalUser.isEmpty() && optionalUser != null) {
             user = optionalUser.get();
-        }else{
+        } else {
             return "Пользователь не найден!";
         }
 
@@ -107,7 +100,7 @@ public class UserService {
             return "Пользователь не найден!";
         }
 
-        if (user.getIsBlocked()){
+        if (user.getIsBlocked()) {
             return "Данный пользователь заблокирован!";
         }
 
@@ -119,13 +112,9 @@ public class UserService {
             return "Пароли не совподают!";
         }
 
-        if (newPassword == null || newPassword.isEmpty() || newPassword.length() < 8) {
-            return "Пароль слишком короткий!";
-        }
-
-        String[] mass = newPassword.split(" ");
-        if (mass.length > 1) {
-            return "Пароль не может содержать пробелы!";
+        String resCheck = checkPassword(newPassword);
+        if (resCheck != "" && resCheck != null) {
+            return resCheck;
         }
 
         user.setPassword(newPassword);
@@ -133,5 +122,60 @@ public class UserService {
         userRepository.save(user);
 
         return "Успешно!";
+    }
+
+    public String checkPassword(String password) {
+        char[] chars = password.toCharArray();
+
+        if (password == null || password.isEmpty() || password.length() < 8) {
+            return "Пароль слишком короткий!";
+        }
+
+        String[] mass = password.split(" ");
+        if (mass.length > 1 || chars[0] == ' ' || chars[password.length() - 1] == ' ') {
+            return "Пароль не может содержать пробелы!";
+        }
+
+        char[] rusChars = "ёйцукенгшщзхъфывапролджэячсмитьбю".toCharArray();
+        for (char el : chars) {
+            for (char rusEl : rusChars) {
+                if (el == rusEl) {
+                    return "Пароль не должен содержать киррилицу";
+                }
+            }
+        }
+
+        char[] numberChars = "0123456789".toCharArray();
+        boolean isNumber = false;
+        for (char el : chars) {
+            for (char numberEl : numberChars) {
+                if (el == numberEl) {
+                    isNumber = true;
+                    break;
+                }
+            }
+        }
+
+        char[] letterLowerChars = "qwertyuiopasdfghjklzxcvbnm".toCharArray();
+        char[] letterUpperChars = "qwertyuiopasdfghjklzxcvbnm".toUpperCase().toCharArray();
+        boolean isLowerLetter = false;
+        boolean isUpperLetter = false;
+        for (char el : password.toCharArray()) {
+            for (char letterEl : letterLowerChars) {
+                if (el == letterEl) {
+                    isLowerLetter = true;
+                    break;
+                }
+            }
+
+            for (char letterEl : letterUpperChars) {
+                if (el == letterEl) {
+                    isUpperLetter = true;
+                    break;
+                }
+            }
+        }
+
+        return "";
     }
 }
