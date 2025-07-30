@@ -4,6 +4,7 @@ import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.Optional;
 
 @Service
@@ -86,35 +87,27 @@ public class UserService {
         }
     }
 
-    public String changePassword(String login, String oldPassword, String newPassword, String confirmPassword) {
+    public String changePassword(String login, String oldPassword, String newPassword, String confirmPassword) throws UserPrincipalNotFoundException {
         Optional<User> optionalUser = userRepository.findByLogin(login);
 
-        User user;
-        if (!optionalUser.isEmpty() && optionalUser != null) {
-            user = optionalUser.get();
-        } else {
-            return "Пользователь не найден!";
-        }
+        User user = userRepository.findByLogin(login).orElseThrow(() -> new UserPrincipalNotFoundException("User not found error"));
 
-        if (user == null) {
-            return "Пользователь не найден!";
-        }
 
         if (user.getIsBlocked()) {
-            return "Данный пользователь заблокирован!";
+            throw new UserPrincipalNotFoundException("Пользователь был заблокирован!");
         }
 
         if (!user.getPassword().equals(oldPassword)) {
-            return "Старый пароль неверный пользователя неверный!";
+            throw new UserPrincipalNotFoundException("Старый пароль неверный!");
         }
 
         if (!newPassword.equals(confirmPassword)) {
-            return "Пароли не совподают!";
+            throw new UserPrincipalNotFoundException("Пароли не совподают!");
         }
 
         String resCheck = checkPassword(newPassword);
         if (resCheck != "" && resCheck != null) {
-            return resCheck;
+            throw new UserPrincipalNotFoundException(resCheck);
         }
 
         user.setPassword(newPassword);

@@ -6,6 +6,8 @@
     import org.springframework.ui.Model;
     import org.springframework.web.bind.annotation.*;
 
+    import java.nio.file.attribute.UserPrincipalNotFoundException;
+
     @Controller
     public class UserController {
         private final UserService userService;
@@ -71,7 +73,12 @@
 
         @PutMapping("/change_password")
         public String changePassword(@RequestParam String login, @RequestParam String oldPassword, @RequestParam String newPassword, @RequestParam String confirmPassword, Model model) {
-            model.addAttribute("text", userService.changePassword(login, oldPassword, newPassword, confirmPassword));
+            try {
+                model.addAttribute("text", userService.changePassword(login, oldPassword, newPassword, confirmPassword));
+            } catch (UserPrincipalNotFoundException e) {
+                model.addAttribute("text", e.getMessage());
+            }
+
             return "info";
         }
 
