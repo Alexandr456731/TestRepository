@@ -37,6 +37,11 @@ public class UserService {
         }
 
 
+        String resForCheck = checkPassword(user.getPassword());
+        if (resForCheck != null){
+            return resForCheck;
+        }
+
         userRepository.save(user);
         return "Успешно!";
     }
@@ -106,7 +111,7 @@ public class UserService {
         }
 
         String resCheck = checkPassword(newPassword);
-        if (resCheck != "" && resCheck != null) {
+        if (resCheck != null) {
             throw new UserPrincipalNotFoundException(resCheck);
         }
 
@@ -173,6 +178,6 @@ public class UserService {
             return "Пароль слишеом простой!";
         }
 
-        return "";
+        return null;
     }
 }
