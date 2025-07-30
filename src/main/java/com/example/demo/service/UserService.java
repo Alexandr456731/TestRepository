@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.util.Checker;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
@@ -37,7 +38,7 @@ public class UserService {
         }
 
 
-        String resForCheck = checkPassword(user.getPassword());
+        String resForCheck = Checker.checkPassword(user.getPassword());
         if (resForCheck != null){
             return resForCheck;
         }
@@ -110,7 +111,7 @@ public class UserService {
             throw new UserPrincipalNotFoundException("Пароли не совподают!");
         }
 
-        String resCheck = checkPassword(newPassword);
+        String resCheck = Checker.checkPassword(newPassword);
         if (resCheck != null) {
             throw new UserPrincipalNotFoundException(resCheck);
         }
@@ -120,64 +121,5 @@ public class UserService {
         userRepository.save(user);
 
         return "Успешно!";
-    }
-
-    public String checkPassword(String password) {
-        char[] chars = password.toCharArray();
-
-        if (password == null || password.isEmpty() || password.length() < 8) {
-            return "Пароль слишком короткий!";
-        }
-
-        String[] mass = password.split(" ");
-        if (mass.length > 1 || chars[0] == ' ' || chars[password.length() - 1] == ' ') {
-            return "Пароль не может содержать пробелы!";
-        }
-
-        char[] rusChars = "ёйцукенгшщзхъфывапролджэячсмитьбю".toCharArray();
-        for (char el : chars) {
-            for (char rusEl : rusChars) {
-                if (el == rusEl) {
-                    return "Пароль не должен содержать киррилицу";
-                }
-            }
-        }
-
-        char[] numberChars = "0123456789".toCharArray();
-        boolean isNumber = false;
-        for (char el : chars) {
-            for (char numberEl : numberChars) {
-                if (el == numberEl) {
-                    isNumber = true;
-                    break;
-                }
-            }
-        }
-
-        char[] letterLowerChars = "qwertyuiopasdfghjklzxcvbnm".toCharArray();
-        char[] letterUpperChars = "qwertyuiopasdfghjklzxcvbnm".toUpperCase().toCharArray();
-        boolean isLowerLetter = false;
-        boolean isUpperLetter = false;
-        for (char el : password.toCharArray()) {
-            for (char letterEl : letterLowerChars) {
-                if (el == letterEl) {
-                    isLowerLetter = true;
-                    break;
-                }
-            }
-
-            for (char letterEl : letterUpperChars) {
-                if (el == letterEl) {
-                    isUpperLetter = true;
-                    break;
-                }
-            }
-        }
-
-        if (!(isLowerLetter && isUpperLetter && isNumber)) {
-            return "Пароль слишеом простой!";
-        }
-
-        return null;
     }
 }
