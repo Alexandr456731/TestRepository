@@ -169,6 +169,10 @@ public class UserService {
             }
         }
 
+        if (!(isLowerLetter && isUpperLetter && isNumber)) {
+            return "Пароль слишеом простой!";
+        }
+
         return "";
     }
 }
