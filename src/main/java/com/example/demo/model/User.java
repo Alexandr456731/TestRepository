@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 import java.math.BigInteger;
@@ -21,7 +22,7 @@ public class User {
     private String login;
     private String password;
     private String name;
-    @NonNull
+    @Email
     private String email;
     private Boolean isAdmin = false;
     private Boolean isBlocked = false;

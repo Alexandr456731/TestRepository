@@ -37,12 +37,6 @@ public class UserService {
             return "Аккаунт с таким логином уже существует!";
         }
 
-
-        String resForCheck = Checker.checkPassword(user.getPassword());
-        if (resForCheck != null){
-            return resForCheck;
-        }
-
         userRepository.save(user);
         return "Успешно!";
     }
@@ -109,11 +103,6 @@ public class UserService {
 
         if (!newPassword.equals(confirmPassword)) {
             throw new UserPrincipalNotFoundException("Пароли не совподают!");
-        }
-
-        String resCheck = Checker.checkPassword(newPassword);
-        if (resCheck != null) {
-            throw new UserPrincipalNotFoundException(resCheck);
         }
 
         user.setPassword(newPassword);
