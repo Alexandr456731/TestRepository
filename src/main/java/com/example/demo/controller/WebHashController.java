@@ -16,7 +16,7 @@ public class WebHashController {
 
     @GetMapping("/hash-admin/{login}/{hash}")
     public String getHash(@PathVariable String login, @PathVariable String hash, Model model) {
-        model.addAttribute("text", webHash.getHash(login, hash));
+        model.addAttribute("message", webHash.getHash(login, hash));
         return "info";
     }
 }

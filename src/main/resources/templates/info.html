@@ -1,14 +1,17 @@
 <!doctype html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Информация</title>
-</head>
-<body>
-<p th:text="${text}">Текст не указан</p>
-<a href="/"><button>На главную</button></a>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title th:text="${type}">Информация</title>
+    </head>
+    <body>
+        <p th:text="${message}">Текст не указан</p>
+        <div th:if="${messages != null and #Lists.isNotEmty(messages)}">
+            <p th:each="text : ${messages}" th:text="${message}"></p>
+        </div>
+        <a href="/"><button>На главную</button></a>
+    </body>
 </html>

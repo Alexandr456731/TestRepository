@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import com.example.demo.annotation.Login;
+import com.example.demo.annotation.Password;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
@@ -18,8 +20,9 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NonNull
+    @Login
     private String login;
+    @Password
     private String password;
     private String name;
     @Email

@@ -1,12 +1,11 @@
     package com.example.demo.controller;
 
+    import com.example.demo.exception.UserNotFoundException;
     import com.example.demo.model.User;
     import com.example.demo.service.UserService;
     import org.springframework.stereotype.Controller;
     import org.springframework.ui.Model;
     import org.springframework.web.bind.annotation.*;
-
-    import java.nio.file.attribute.UserPrincipalNotFoundException;
 
     @Controller
     public class UserController {
@@ -27,8 +26,9 @@
 
         @PostMapping("/registration")
         public String registrationUser(@ModelAttribute  User user, Model model) {
-            String text =  userService.registration(user);
-            model.addAttribute("text", text);
+            userService.registration(user);
+            model.addAttribute("message", "Успешно!");
+            model.addAttribute("type", "Информация");
             return "info";
         }
 
@@ -42,19 +42,13 @@
             User user = userService.authorization(login, password);
 
             if (user != null) {
-                if (user.getIsBlocked()){
-                    model.addAttribute("text", "Данный аккаунт заблокирован!");
-                    return "wrongAuthorization";
-                }
-
                 model.addAttribute("name", user.getName());
                 model.addAttribute("balance", user.getBalance());
                 model.addAttribute("login", user.getLogin());
                 model.addAttribute("password", user.getPassword());
                 return "mainUser";
             }else{
-                model.addAttribute("text", "Неверный логин или пароль!");
-                return "wrongAuthorization";
+                throw new UserNotFoundException("Ошибка: Пользователь не существует");
             }
         }
 
@@ -67,17 +61,16 @@
         @GetMapping("/change_password/{login}")
         public String changePassword(@PathVariable String login, Model model) {
             model.addAttribute("login", login);
-            return "change_password";
+            model.addAttribute("Сменить пароль");
+            return "changePassword";
         }
 
 
         @PutMapping("/change_password")
         public String changePassword(@RequestParam String login, @RequestParam String oldPassword, @RequestParam String newPassword, @RequestParam String confirmPassword, Model model) {
-            try {
-                model.addAttribute("text", userService.changePassword(login, oldPassword, newPassword, confirmPassword));
-            } catch (UserPrincipalNotFoundException e) {
-                model.addAttribute("text", e.getMessage());
-            }
+            userService.changePassword(login, oldPassword, newPassword, confirmPassword);
+            model.addAttribute("message", "Успешно!");
+            model.addAttribute("type", "Информация");
 
             return "info";
         }
@@ -90,7 +83,9 @@
 
         @DeleteMapping("/delete")
         public String deleteUserConfirm(@RequestParam String login, @RequestParam String password, Model model) {
-            model.addAttribute("text", userService.delete(login, password));
+            userService.delete(login, password);
+            model.addAttribute("message", "Успешно!");
+            model.addAttribute("type", "Информация");
             return "info";
         }
     }

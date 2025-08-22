@@ -1,8 +1,8 @@
 package com.example.demo.service;
 
+import com.example.demo.exception.*;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.util.Checker;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
@@ -16,29 +16,20 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public String registration(User user) {
-        if (user.getEmail() == null || user.getEmail().isEmpty()) {
-            return "Email не может быть пустым!";
-        }
-
-        if (user.getLogin() == null || user.getLogin().isEmpty()) {
-            return "Логин не может быть пустым!";
-        }
-
+    public void registration(User user) {
         Optional<User> byEmail = userRepository.findByEmail(user.getEmail());
 
         if (byEmail.isPresent()) {
-            return "Аккаунт с таким email уже существует!";
+            throw new EmailIsPresentException("Аккаунт с таким email уже существует!");
         }
 
         Optional<User> byLogin = userRepository.findByLogin(user.getLogin());
 
         if (byLogin.isPresent()) {
-            return "Аккаунт с таким логином уже существует!";
+            throw new LoginIsPresentException("Аккаунт с таким логином уже существует!");
         }
 
         userRepository.save(user);
-        return "Успешно!";
     }
 
     public User authorization(String login, String password) {
@@ -47,68 +38,69 @@ public class UserService {
         if (optionalUser != null && !optionalUser.isEmpty()) {
             user = optionalUser.get();
         } else {
-            return null;
+            throw new UserNotFoundException("Пользователь не найден!");
         }
 
         if (user == null) {
-            return null;
+            throw new UserNotFoundException("Пользователь не найден!");
+        }
+
+        if (user.getIsBlocked()){
+            throw new UserIsBlockedException("Пользоваатель заблокирован!");
         }
 
         if (user.getPassword().equals(password)) {
             return user;
         } else {
-            return null;
+            throw new PasswordIncorrectException("Пароль неверный!");
         }
     }
 
-    public String delete(String login, String password) {
+    public void delete(String login, String password) {
         Optional<User> optionalUser = userRepository.findByLogin(login);
 
         User user;
         if (!optionalUser.isEmpty() && optionalUser != null) {
             user = optionalUser.get();
         } else {
-            return "Пользователь не найден!";
+            throw new UserNotFoundException("Пользователь не найден!");
         }
 
         if (user == null) {
-            return "Пользователь не найден!";
+            throw new UserNotFoundException("Пользователь не найден!");
         }
 
         if (user.getIsBlocked()) {
-            return "Данный пользователь заблокирован!";
+            throw new UserIsBlockedException("Данный пользователь заблокирован!");
         }
 
         if (user.getPassword().equals(password)) {
             userRepository.delete(user);
-            return "Успешно!";
         } else {
-            return "Пароль пользователя неверный!";
+            throw new PasswordIncorrectException("Пароль неверный!");
         }
     }
 
-    public String changePassword(String login, String oldPassword, String newPassword, String confirmPassword) throws UserPrincipalNotFoundException {
+    public void changePassword(String login, String oldPassword, String newPassword, String confirmPassword) {
         Optional<User> optionalUser = userRepository.findByLogin(login);
 
-        User user = userRepository.findByLogin(login).orElseThrow(() -> new UserPrincipalNotFoundException("User not found error"));
+        User user = userRepository.findByLogin(login).orElseThrow(() -> new UserNotFoundException("Ошибка: пользователь не существует"));
 
 
         if (user.getIsBlocked()) {
-            throw new UserPrincipalNotFoundException("Пользователь был заблокирован!");
+            throw new UserIsBlockedException("Пользователь был заблокирован!");
         }
 
         if (!user.getPassword().equals(oldPassword)) {
-            throw new UserPrincipalNotFoundException("Старый пароль неверный!");
+            throw new PasswordChangeException("Старый пароль неверный!", login);
         }
 
         if (!newPassword.equals(confirmPassword)) {
-            throw new UserPrincipalNotFoundException("Пароли не совподают!");
+            throw new PasswordChangeException("Пароли не совподают!", login);
         }
 
         user.setPassword(newPassword);
 
         userRepository.save(user);
-
-        return "Успешно!";
     }
 }

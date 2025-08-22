@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title th:text="${title}">Неизвестня ошибка</title>
+</head>
+  <body>
+    <p>Ошибка: <span style="color: #db4021" th:text="${title}">Ошибка не указана</span></p>
+    <p>Текст ошибки: <span style="color: #db4021" th:text="${text}">Текст ошибки не указан</span></p>
+    <p>Время: <span th:text="${time}">Время не указано</span></p>
+  </body>
+</html>
