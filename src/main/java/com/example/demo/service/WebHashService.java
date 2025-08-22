@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.exception.UserIsBlockedException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,7 @@ public class WebHashService {
             if (el.equals(hash)) {
                 user.setIsBlocked(true);
                 userRepository.save(user);
-                return "Вы ввели хэш блокировки или хэш который был пиратский, поэтому ваш аккаунт будет заблокирован!";
+                throw new UserIsBlockedException("Вы ввели хэш блокировки или хэш который был пиратский, поэтому ваш аккаунт будет заблокирован!");
             }
         }
 
