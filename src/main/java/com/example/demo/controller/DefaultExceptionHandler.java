@@ -65,7 +65,7 @@
         @ResponseStatus(HttpStatus.BAD_REQUEST)
         public String handlePasswordIncorrectException(PasswordIncorrectException ex, Model model) {
             model.addAttribute("type", "Ошибка");
-            model.addAttribute("message", ex.getMessage());
+            model.addAttribute("text", ex.getMessage());
 
             return "wrongAuthorization";
         }
@@ -74,7 +74,7 @@
         @ResponseStatus(HttpStatus.BAD_REQUEST)
         public String handleUserNotFoundException(UserNotFoundException ex, Model model) {
             model.addAttribute("type", "Ошибка");
-            model.addAttribute("message", ex.getMessage());
+            model.addAttribute("text", ex.getMessage());
 
             return "wrongAuthorization";
         }
@@ -83,7 +83,7 @@
         @ResponseStatus(HttpStatus.BAD_REQUEST)
         public String handleUserIsBlockedException(UserIsBlockedException ex, Model model) {
             model.addAttribute("type", "Пользователь заблокирован");
-            model.addAttribute("message", ex.getMessage());
+            model.addAttribute("text", ex.getMessage());
 
             return "wrongAuthorization";
         }

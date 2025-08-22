@@ -51,6 +51,7 @@ public class PasswordChecker implements ConstraintValidator<Password, String> {
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
+        int validNumber = 0;
         if (s == null || s.length() < MIN_LENGTH) {
             return false;
         }
@@ -59,12 +60,12 @@ public class PasswordChecker implements ConstraintValidator<Password, String> {
                 .mapToObj(el -> (char) el)
                 .toList();
 
-        if (!(Collections.disjoint(symbols, BIG_LETTERS_SET) && Collections.disjoint(symbols, SMALL_LETTERS_SET))) {
+        if (Collections.disjoint(symbols, BIG_LETTERS_SET) && Collections.disjoint(symbols, SMALL_LETTERS_SET)) {
             return false;
         }
 
 
-        if (!Collections.disjoint(symbols, DIGITS_SET)) {
+        if (Collections.disjoint(symbols, DIGITS_SET)) {
             return false;
         }
 
@@ -78,7 +79,6 @@ public class PasswordChecker implements ConstraintValidator<Password, String> {
         if (notValid) {
             return false;
         }
-
         return true;
     }
 }

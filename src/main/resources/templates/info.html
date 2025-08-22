@@ -9,8 +9,8 @@
     </head>
     <body>
         <p th:text="${message}">Текст не указан</p>
-        <div th:if="${messages != null and #Lists.isNotEmty(messages)}">
-            <p th:each="text : ${messages}" th:text="${message}"></p>
+        <div th:if="${messages != null}">
+            <p th:each="text : ${messages}" th:text="${text}"></p>
         </div>
         <a href="/"><button>На главную</button></a>
     </body>
