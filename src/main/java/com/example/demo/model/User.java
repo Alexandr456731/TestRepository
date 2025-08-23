@@ -29,5 +29,20 @@ public class User {
     private String email;
     private Boolean isAdmin = false;
     private Boolean isBlocked = false;
+
+    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
     private BigInteger balance = BigInteger.ZERO;
+
+    public long getBalance() {
+        return balance.longValue();
+    }
+
+    public void setBalance(long money) {
+        balance = BigInteger.valueOf(money);
+    }
+
+    public void addBalance(long money) {
+        balance = balance.add(BigInteger.valueOf(money));
+    }
 }

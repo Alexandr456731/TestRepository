@@ -1,25 +1,31 @@
 package com.example.demo.service;
 
+import com.example.demo.config.HashConfiguration;
 import com.example.demo.exception.UserIsBlockedException;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
 
 @Service
 public class WebHashService {
     private final UserRepository userRepository;
+    private final Map<String, Function<User, String>> hasher;
 
     public WebHashService(UserRepository userRepository){
         this.userRepository = userRepository;
+        hasher = new HashMap<>();
+
+        HashConfiguration.setHasher(hasher, this.userRepository);
     }
 
-    public String getHash( String login,  String hash) {
-        List<String> hashList = List.of();
-        List<String> blockerList = List.of("hash-4018");
-        List<String> adminList = List.of();
+    public String getHash(String login,  String hash) {
 
         User user;
         Optional<User> ou = userRepository.findByLogin(login);
@@ -29,27 +35,12 @@ public class WebHashService {
             return "Пользователь с таким именем не найден!";
         }
 
-        for (String el : hashList) {
-            if (el.equals(hash)) {
-                return "Просто хэш, который пока что ничего не делает!";
+        for (String key : hasher.keySet()) {
+            if (hash.equals(key)){
+                return hasher.get(key).apply(user);
             }
         }
 
-        for (String el : blockerList) {
-            if (el.equals(hash)) {
-                user.setIsBlocked(true);
-                userRepository.save(user);
-                throw new UserIsBlockedException("Вы ввели хэш блокировки или хэш который был пиратский, поэтому ваш аккаунт будет заблокирован!");
-            }
-        }
-
-        for (String el : adminList) {
-            if (el.equals(hash)) {
-                user.setIsAdmin(true);
-                userRepository.save(user);
-                return "Вы ввели админ-хэш, поэьому вы получаете админку!";
-            }
-        }
 
         return "Хэш недействительный!";
     }
